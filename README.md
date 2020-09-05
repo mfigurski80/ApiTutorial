@@ -9,5 +9,5 @@ Ideally, zero dependencies, it'll rely entirely on Go standard lib
 * [x] `GET /coasters` return list of coasters as JSON
 * [x] `GET /coasters/{id}` returns coaster with specific id
 * [x] `POST /coasters` accepts a new coaster to be added. 415 if not `application/json`
-* [ ] `GET /admin` required basic auth
+* [x] `GET /admin` required basic auth
 * [ ] `GET /coasters/random` redirects (302) to random coaster id
