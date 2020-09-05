@@ -2,16 +2,18 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type Coaster struct {
 	Name         string `json:"name"`
 	Manufacturer string `json:"manufacturer"`
 	ID           string `json:"id"`
-	InPark       string `json:"inPar"`
+	InPark       string `json:"inPark"`
 	Height       int    `json:"height"`
 }
 
@@ -66,6 +68,13 @@ func (h *coasterHandlers) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ct := r.Header.Get("content-type")
+	if ct != "application/json" {
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		w.Write([]byte(fmt.Sprintf("need content-type 'application/json', got '%s'", ct)))
+		return
+	}
+
 	var coaster Coaster
 	err = json.Unmarshal(bodyBytes, &coaster)
 	if err != nil {
@@ -74,6 +83,7 @@ func (h *coasterHandlers) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	coaster.ID = fmt.Sprintf("%d", time.Now().UnixNano())
 	h.Lock()
 	h.store[coaster.ID] = coaster
 	defer h.Unlock()
